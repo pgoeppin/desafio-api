@@ -45,3 +45,79 @@ btn.addEventListener("click", () => {
     inputAmount.value = "";
   }
 });
+/* FUNCION PARA OBTENER INFORMACION PARA LOS GRAFICOS */
+async function getGraphData(url) {
+    const request = await fetch(url);
+    const data = await request.json();
+    return data;
+}
+/* FUNCION PARA LA CONFIGURACION DE LOS GRAFICOS */
+function configGrafica(monedas) {
+const graphicType = "line";
+const fechasMoneda = monedas.serie.map((moneda) => new Date(moneda.fecha).toDateString());
+const titulo = monedas.nombre;
+const lineColor = "red";
+const valores = monedas.serie.map((moneda) => moneda.valor);
+const config = {
+  type: graphicType,
+  data: {
+    labels: fechasMoneda,
+    datasets: [
+      {
+        label: titulo,
+        backgroundColor: lineColor,
+        borderColor: "rgb(255, 99, 132)",
+        color: "white",
+        data: valores,
+      },
+    ],
+  },
+  options: {
+    plugins: {
+        legend: {
+            labels: {
+                color: 'white',
+            }
+    },
+    },
+    scales: {
+        x: {
+            grid: {
+                display: false,
+                borderColor: 'white',
+            },
+            ticks: {
+                color:'white',
+            }
+        },
+        y: {
+            grid: {
+                borderColor: 'white',
+            },
+            ticks: {
+                color: 'white',
+            }
+        }
+    }
+  }
+};
+return config;
+}
+/* DEFINIMOS LA VARIABLE CHART COMO NULA*/
+let chart;
+/* FUNCION PARA RENDERIZAR EL GRAFICO */
+async function renderGrafica() {
+const apiUrlGraph = apiURL + currencyType.value;
+const currency = await getGraphData(apiUrlGraph);
+const configChart = configGrafica(currency);
+const chartDOM = document.getElementById("myGraph");
+graph.setAttribute("style","background-color: #3a3a49da;");
+if (chart) {
+    chart.destroy()
+}
+chart = new Chart(chartDOM, configChart);
+}
+/* EVENTO DE CAMBIO DE TIPO DE MONEDA PARA LOS DISTINTOS GRAFICOS */
+currencyType.addEventListener("change", async () => {
+    renderGrafica()    
+});
