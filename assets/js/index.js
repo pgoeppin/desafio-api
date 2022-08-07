@@ -40,8 +40,11 @@ async function renderExchange() {
 btn.addEventListener("click", () => {
   if (Number(inputAmount.value) > 0 && currencyType.value != '') {
     renderExchange();
+  } else if (currencyType.value == '') {
+    alert("¡Recuerde elegir una moneda!");
+    inputAmount.value = "";
   } else {
-    alert("Ingrese una cantidad que mayor a 0 y elija una moneda.");
+    alert("Ingrese un valor mayor a 0, por favor.")
     inputAmount.value = "";
   }
 });
